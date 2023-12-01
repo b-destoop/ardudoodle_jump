@@ -1,3 +1,4 @@
+import time
 import pygame
 from pygame.locals import *
 import sys
@@ -79,9 +80,17 @@ class platform(pygame.sprite.Sprite):
         self.surf.fill((0,255,0))
         self.rect = self.surf.get_rect(center = (random.randint(0,WIDTH-10),
                                                  random.randint(0, HEIGHT-30)))
+        
+        self.speed = random.randint(-1, 1)
+        self.moving = bool(random.getrandbits(1))
  
     def move(self):
-        pass
+        if self.moving == True:  
+            self.rect.move_ip(self.speed,0)
+            if self.speed > 0 and self.rect.left > WIDTH:
+                self.rect.right = 0
+            if self.speed < 0 and self.rect.right < 0:
+                self.rect.left = WIDTH
  
  
 def check(platform, groupies):
@@ -117,6 +126,7 @@ P1 = Player()
 PT1.surf = pygame.Surface((WIDTH, 20))
 PT1.surf.fill((255,0,0))
 PT1.rect = PT1.surf.get_rect(center = (WIDTH/2, HEIGHT - 10))
+PT1.moving = False
  
 all_sprites = pygame.sprite.Group()
 all_sprites.add(PT1)
@@ -154,6 +164,16 @@ while True:
             plat.rect.y += abs(P1.vel.y)
             if plat.rect.top >= HEIGHT:
                 plat.kill()
+
+    if P1.rect.top > HEIGHT: #P1 goes underneath the bottom of the screen
+        for entity in all_sprites:
+            entity.kill()
+            time.sleep(1)
+            displaysurface.fill((255,0,0))
+            pygame.display.update()
+            time.sleep(1)
+            pygame.quit()
+            exit()
  
     plat_gen()
     displaysurface.fill((0,0,0))
