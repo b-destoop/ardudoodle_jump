@@ -1,6 +1,26 @@
 # ardudoodle_jump
 Doodle jump with haptic feedback controller
 
+# serial formatting
+The serial print should look like this (just swap the text for the numbers)
+```
+# arduino --> pc
+xpos
+xpos
+xpos
+xpos
+xpos
+...
+
+# pc --> arduino
+wind_speed
+wind_speed
+wind_speed
+wind_speed
+wind_speed
+...
+```
+
 # arduino code
 todo:
 - implement mass-spring-dampener system (last lab)
@@ -17,7 +37,6 @@ todo:
 - make main character jump
 
 # windows funky shizzle (linux 4ever tho)
-
 ## venv
 to activate the virtual environment for python in Windows:
 - run `Set-ExecutionPolicy Unrestricted -Scope Process` to be able to activate the virtual environment 
