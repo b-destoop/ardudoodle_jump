@@ -3,15 +3,6 @@
 #include <Motor.h>
 #include <OpenLoopController.h>
 
-/* void setup() {
-  Serial.begin(9600);
-}
-
-void loop() {
-  Serial.write(45); // send a byte with the value 45
-  int bytesSent = Serial.write("meep");  //send the string "hello" and return the length of the string.
-} */
-
 unsigned long prev = 0;
 float force;
 float relativePosition;
@@ -59,6 +50,7 @@ Hapkit hapkit(&virtualCoupling);
 void setup()
 {
   Serial.begin(9600);
+  Serial.setTimeout(20);
   hapkit.setKinematicConstant(4.13);
   hapkit.begin();
 }
@@ -76,13 +68,15 @@ void loop()
   incomingWind = Serial.parseFloat();
   // Serial.print("apenkak"); Serial.println(incomingWind);
 
+  Serial.println(relativePosition);
+  tPrev = tCurrent;
   if (abs(tCurrent - tPrev) > printPeriod)
   {
     // Serial.print("\trel_position:");Serial.println(relativePosition);
     // Serial.print("\tforce_feedback:");Serial.print(force);
     // Serial.print("\twind:");Serial.print(incomingWind);
     // Serial.print("\tforce_feedback_with_wind:");Serial.println(hapkit.getForceFeedback());
-    Serial.println(relativePosition);
-    tPrev = tCurrent;
+    // Serial.println(relativePosition);
+    // tPrev = tCurrent;
   }
 }
