@@ -3,10 +3,13 @@ import pygame
 from pygame.locals import *
 import sys
 import random
+import serial
+
+arduino = serial.Serial(port='COM7', baudrate=9600, timeout=2) 
  
 pygame.init()
 vec = pygame.math.Vector2 #2 for two dimensional
- 
+
 HEIGHT = 450
 WIDTH = 400
 ACC = 0.5
@@ -147,6 +150,22 @@ for x in range(random.randint(4,5)):
  
  
 while True:
+    # read data from Arduino
+    # arduino_data = str(arduino.readline())[:-5]
+    # arduino_position = float(arduino_data.split(":")[1]) # "rel_position:-17.00"
+    arduino_data = str(arduino.readline())
+    arduino_position = arduino_data.split("\\r")
+    arduino_position = arduino_position[0]
+    arduino_position = float(arduino_position[2:])
+    if arduino_position < -45:
+        arduino_position = -45
+    if arduino_position > 45:
+        arduino_position = 45
+    P1.pos.x = ((arduino_position + 45) / 90) * WIDTH 
+
+    # write data to Arduino
+
+    # Update the game state
     P1.update()
     for event in pygame.event.get():
         if event.type == QUIT:

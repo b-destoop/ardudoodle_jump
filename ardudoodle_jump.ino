@@ -67,16 +67,17 @@ void loop() {
   // print every 50 ms
   static int tPrev = millis();
   int tCurrent = millis();
-  static constexpr int printPeriod = 50;
+  static constexpr int printPeriod = 20;
 
   // read the incoming wind:
   incomingWind = (float) Serial.read();
 
   if (abs(tCurrent - tPrev) > printPeriod) {
-    Serial.print("\trel_position:");Serial.println(relativePosition);
-    //Serial.print("\tforce_feedback:");Serial.print(force);
-    //Serial.print("\twind:");Serial.print(incomingWind);
-    //Serial.print("\tforce_feedback_with_wind:");Serial.println(hapkit.getForceFeedback());  
+    // Serial.print("\trel_position:");Serial.println(relativePosition);
+    // Serial.print("\tforce_feedback:");Serial.print(force);
+    // Serial.print("\twind:");Serial.print(incomingWind);
+    // Serial.print("\tforce_feedback_with_wind:");Serial.println(hapkit.getForceFeedback());  
+    Serial.println(relativePosition);
     tPrev = tCurrent;
   }
 }
