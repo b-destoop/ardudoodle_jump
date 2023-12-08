@@ -71,6 +71,7 @@ class Player(pygame.sprite.Sprite):
                     self.pos.y = hits[0].rect.top +1
                     self.vel.y = 0
                     self.jumping = False
+                    self.jump()
  
  
 class platform(pygame.sprite.Sprite):
@@ -113,7 +114,7 @@ def plat_gen():
         while C:
              p = platform()
              p.rect.center = (random.randrange(0, WIDTH - width),
-                              random.randrange(-50, 0))
+                              random.randrange(-70, 0))
              C = check(p, platforms)
         platforms.add(p)
         all_sprites.add(p)
