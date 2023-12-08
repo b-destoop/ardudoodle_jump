@@ -148,15 +148,22 @@ for x in range(random.randint(4,5)):
     platforms.add(pl)
     all_sprites.add(pl)
  
- 
+arduino_position = 0
 while True:
     # read data from Arduino
     # arduino_data = str(arduino.readline())[:-5]
     # arduino_position = float(arduino_data.split(":")[1]) # "rel_position:-17.00"
+    
     arduino_data = str(arduino.readline())
-    arduino_position = arduino_data.split("\\r")
-    arduino_position = arduino_position[0]
-    arduino_position = float(arduino_position[2:])
+    print(arduino_data)
+    
+    arduino_position_str = arduino_data.split("\\r")
+    arduino_position_str = arduino_position_str[0]
+    try:
+        arduino_position = float(arduino_position_str[2:])
+    except ValueError as e:
+        print("had a little oopsie", arduino_position_str)
+        arduino_position = arduino_position
     if arduino_position < -45:
         arduino_position = -45
     if arduino_position > 45:
@@ -164,6 +171,8 @@ while True:
     P1.pos.x = ((arduino_position + 45) / 90) * WIDTH 
 
     # write data to Arduino
+    wind_force = -123
+    arduino.write(bytes(str(wind_force).encode()))
 
     # Update the game state
     P1.update()
