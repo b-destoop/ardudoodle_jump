@@ -1,4 +1,5 @@
 import time
+from typing import Any
 import pygame
 from pygame.locals import *
 import sys
@@ -77,7 +78,7 @@ class Player(pygame.sprite.Sprite):
                     self.jump()
  
  
-class platform(pygame.sprite.Sprite):
+class Platform(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.surf = pygame.Surface((random.randint(50,100), 12))
@@ -111,39 +112,74 @@ def check(platform, groupies):
 def plat_gen():
     while len(platforms) < 6:
         width = random.randrange(50,100)
-        p  = platform()      
+        p  = Platform()      
         C = True
          
         while C:
-             p = platform()
+             p = Platform()
              p.rect.center = (random.randrange(0, WIDTH - width),
                               random.randrange(-70, 0))
              C = check(p, platforms)
         platforms.add(p)
         all_sprites.add(p)
  
+class Wind(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()      
+        self.speed = random.randint(-1, 1)
+        self.moving = bool(random.getrandbits(1))
+        self.time = self.gen_rand_time()
+        self.active = False
+        self.strength = 0.00
+
+    def gen_rand_time(self):
+        max_seconds = 2
+        return random.randint(0,FPS*max_seconds)
+    
+    def gen_rand_strength(self):
+        max_strength = 100
+        return (random.random() - 0.5) * 2 * max_strength
+ 
+    def update(self):
+        self.time -= 1
+        if self.time <= 0:
+            self.time = self.gen_rand_time()
+            self.active = not self.active
+            self.strength = self.gen_rand_strength()
+
+    def get_wind_val(self):
+        if self.active:
+            return self.strength
+        else:
+            return 0
+        
+            
+        
  
         
-PT1 = platform()
+PT1 = Platform()
 P1 = Player()
  
 PT1.surf = pygame.Surface((WIDTH, 20))
 PT1.surf.fill((255,0,0))
 PT1.rect = PT1.surf.get_rect(center = (WIDTH/2, HEIGHT - 10))
 PT1.moving = False
+
+wind = Wind()
  
 all_sprites = pygame.sprite.Group()
 all_sprites.add(PT1)
 all_sprites.add(P1)
+# all_sprites.add(wind)
  
 platforms = pygame.sprite.Group()
 platforms.add(PT1)
  
 for x in range(random.randint(4,5)):
     C = True
-    pl = platform()
+    pl = Platform()
     while C:
-        pl = platform()
+        pl = Platform()
         C = check(pl, platforms)
     platforms.add(pl)
     all_sprites.add(pl)
@@ -155,7 +191,6 @@ while True:
     # arduino_position = float(arduino_data.split(":")[1]) # "rel_position:-17.00"
     
     arduino_data = str(arduino.readline())
-    print(arduino_data)
     
     arduino_position_str = arduino_data.split("\\r")
     arduino_position_str = arduino_position_str[0]
@@ -171,8 +206,11 @@ while True:
     P1.pos.x = ((arduino_position + 45) / 90) * WIDTH 
 
     # write data to Arduino
-    wind_force = -123
+    wind_force = int(wind.get_wind_val())
     arduino.write(bytes(str(wind_force).encode()))
+
+    wind.update()
+    print(wind_force)
 
     # Update the game state
     P1.update()
