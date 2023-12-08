@@ -15,7 +15,7 @@ void loop() {
 unsigned long prev = 0; 
 float force;
 float relativePosition;
-int incomingWind = 0;
+float incomingWind = 0;
 
 void virtualCoupling(Hapkit &hapkit) {
   static const float damping = 0.05; //0.03;
@@ -43,8 +43,7 @@ void virtualCoupling(Hapkit &hapkit) {
   // 4) calculate force
   //float force = (-stiffness * relativePosition) - (damping * relativeVelocity);
   force = (-stiffness * relativePosition) - (damping * relativeVelocity);
-  float wind = (float) incomingWind;
-  float totalForce = force + wind;
+  float totalForce = force + incomingWind;
 
   // 5) set force feedback
   hapkit.setForceFeedback(totalForce);
@@ -71,13 +70,13 @@ void loop() {
   static constexpr int printPeriod = 50;
 
   // read the incoming wind:
-  incomingWind = Serial.read();
+  incomingWind = (float) Serial.read();
 
   if (abs(tCurrent - tPrev) > printPeriod) {
-    Serial.print("\trel_position:");Serial.print(relativePosition);
-    Serial.print("\tforce_feedback:");Serial.print(force);
-    Serial.print("\twind:");Serial.print(incomingWind);
-    Serial.print("\tforce_feedback_with_wind:");Serial.println(hapkit.getForceFeedback());  
+    Serial.print("\trel_position:");Serial.println(relativePosition);
+    //Serial.print("\tforce_feedback:");Serial.print(force);
+    //Serial.print("\twind:");Serial.print(incomingWind);
+    //Serial.print("\tforce_feedback_with_wind:");Serial.println(hapkit.getForceFeedback());  
     tPrev = tCurrent;
   }
 }
