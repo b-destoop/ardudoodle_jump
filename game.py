@@ -6,7 +6,7 @@ import sys
 import random
 import serial
 
-arduino = serial.Serial(port='COM7', baudrate=9600, timeout=2) 
+arduino = serial.Serial(port='COM5', baudrate=9600, timeout=2) 
  
 pygame.init()
 vec = pygame.math.Vector2 #2 for two dimensional
@@ -170,7 +170,7 @@ wind = Wind()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(PT1)
 all_sprites.add(P1)
-# all_sprites.add(wind)
+#all_sprites.add(wind)
  
 platforms = pygame.sprite.Group()
 platforms.add(PT1)
